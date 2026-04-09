@@ -1,13 +1,14 @@
-import { StyleSheet, Text, TextInput, View, Image, Dimensions, StatusBar, Pressable, Platform, FlatList } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
-import globalStyles from '../constants/globalStyles'
-import { useNavigation } from '@react-navigation/native'
 import Entypo from '@expo/vector-icons/Entypo';
+import Feather from '@expo/vector-icons/Feather';
+import { useNavigation } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import Logo from '../assets/icon-bs.png'
-import { useSelector } from 'react-redux'
-import Feather from '@expo/vector-icons/Feather';
+import React, { useCallback, useState } from 'react';
+import { Dimensions, FlatList, Image, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { useSelector } from 'react-redux';
+import FilterList from '../assets/filter-list.png';
+import Logo from '../assets/icon-bs.png';
+import globalStyles from '../constants/globalStyles';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -115,18 +116,20 @@ const HalalReviewInfoScreen = () => {
           </View>
           <View style={{ width: Dimensions.get('window').width - 120 }}>
             <Text style={{ fontSize: 12, color: '#FFFFFF', fontFamily: 'popS' }}>Use your Current or Search any Location</Text>
-            <Text style={{ fontSize: 14, color: '#2D2729', fontFamily: 'popS' }}>{currentLocation.length > 30 ? `${currentLocation.substring(0, 30)}...` : currentLocation}{" "}<Entypo name="chevron-thin-right" size={15} color="#2D2729" /></Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={{ flex: 1, marginRight: 5, fontSize: 14, color: '#2D2729', fontFamily: 'popS' }} numberOfLines={1} ellipsizeMode="tail">{currentLocation}</Text><Entypo name="chevron-thin-right" size={15} color="#2D2729" />
+            </View>
           </View>
           <Image source={Logo} style={{ maxWidth: 40, height: 40 }} />
         </Pressable>}
-        <View style={styles.searchContainer}>
-          <TextInput
-            placeholder="Search by restaurant"
-            onChangeText={(value) => handleSearch(value)}
-            value={search}
-            style={styles.textInput}
-          />
-          <Feather name="search" size={20} color="#B1D235" style={styles.searchIcon} />
+        <View style={{ width: Dimensions.get('window').width - 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginTop: 10 }}>
+          <View style={styles.searchContainer}>
+            <Pressable style={styles.textInput} onPress={() => navigation.navigate('ResultRestaurants', { search: '' })}><Text style={{ paddingHorizontal: 4, paddingVertical: 8, fontSize: 16, opacity: 0.55 }}>Search by restaurant</Text></Pressable>
+            <Feather name="search" size={20} color="#B1D235" style={styles.searchIcon} />
+          </View>
+          <Pressable style={({ pressed }) => [{ backgroundColor: pressed ? 'rgba(177, 210, 53,0.45)' : '#ffffff' }, styles.filterbtn]} onPress={() => navigation.navigate('SortFilter')}>
+            <Image source={FilterList} style={{ maxWidth: 30, height: 30 }} />
+          </Pressable>
         </View>
       </View>
 
@@ -182,7 +185,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 24,
     fontFamily: 'popB',
-    color: '#2D2729',
+    color: '#87aa03',
     textAlign: 'center',
   },
   card: {
@@ -191,7 +194,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'stretch',
     gap: 0,
-    borderRadius: 12,
+    borderRadius: 8,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: '#454955',
@@ -240,21 +243,29 @@ const styles = StyleSheet.create({
     fontFamily: 'popS',
   },
   searchContainer: {
-    width: Dimensions.get('window').width - 30,
+    width: Dimensions.get('window').width - 70,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 8,
     paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: '#B1D235',
-    marginTop: 10
   },
   textInput: {
-    width: Dimensions.get('window').width - 70,
+    width: Dimensions.get('window').width - 120,
     height: 40,
     fontSize: 16,
     lineHeight: 20
+  },
+  filterbtn: {
+    flexDirection: 'row',
+    gap: 5,
+    alignItems: 'center',
+    backgroundColor: '#B1D235',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#B1D235',
   },
 })

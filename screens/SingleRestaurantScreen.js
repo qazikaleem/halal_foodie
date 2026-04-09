@@ -1,16 +1,16 @@
-import { StyleSheet, Text, View, Image, ImageBackground, ScrollView, Dimensions, StatusBar, Pressable, Linking, Platform, ActivityIndicator, Animated } from 'react-native'
-import React, { useCallback, useEffect, useState, useRef } from 'react'
-import globalStyles from '../constants/globalStyles'
-import { useNavigation, useRoute } from '@react-navigation/native'
 import Entypo from '@expo/vector-icons/Entypo';
-import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { fetchRestaurantByCoordsID, fetchRestaurantByID } from '../servers/restaurants'
+import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import ModelComponent from '../components/ModelComponent'
-import LikeBtnComponent from '../components/LikeBtnComponent';
 import { DateTime } from "luxon";
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Animated, Dimensions, ImageBackground, Linking, Platform, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import LikeBtnComponent from '../components/LikeBtnComponent';
+import ModelComponent from '../components/ModelComponent';
+import globalStyles from '../constants/globalStyles';
+import { fetchRestaurantByCoordsID, fetchRestaurantByID } from '../servers/restaurants';
 
 const HEADER_MAX_HEIGHT = 250; // initial height
 const HEADER_MIN_HEIGHT = 70;  // shrunk height
@@ -23,17 +23,29 @@ const SingleRestaurantScreen = () => {
     const [isLoading, setLoading] = useState(true);
     const [restaurant, setRestaurant] = useState({})
     const [hoursVisible, setHoursVisible] = useState(false);
+    //const [restImg, SetRestImg] = useState({uri: null});
 
     const id = route.params.id
     const currentLocation = route.params.currentLocation
     const latitude = route.params.latitude
     const longitude = route.params.longitude
 
+    const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_API_KEY
+
     const restImg = { uri: 'https://backend.halalfoodnearme.com.au/artifacts/240x120/android/4.jpg' };
 
     useEffect(() => {
         FetchRestaurant()
     }, [id])
+
+    const handleBack = () => {
+        const from = route.params?.from;
+        if (from === "Home" || from === "Result" || from === "Favorite" || from === "MapView") {
+            navigation.goBack();   // OK for A screens
+        } else {
+            navigation.navigate('Main')
+        }
+    }
 
     const FetchRestaurant = useCallback(async () => {
         setLoading(true);
@@ -51,11 +63,15 @@ const SingleRestaurantScreen = () => {
     const now = DateTime.now().setZone("Australia/Sydney");
     const day = now.weekdayLong;
 
-    const { formattedAddress, restaurantName, telephoneNo, rating, distancekm, remark_1, remark_2, verifiedDate, daysOfWeek } = restaurant
+    const { formattedAddress, restaurantName, telephoneNo, rating, distancekm, remark_1, remark_2, verifiedDate, daysOfWeek, GoogleRating, photo_reference } = restaurant
 
     const index = daysOfWeek && daysOfWeek.findIndex(val => val.includes(day))
 
     const dayOfWeek = daysOfWeek && daysOfWeek[index].split(',')
+
+    /* useEffect(() => {
+        SetRestImg({uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${photo_reference}&key=${GOOGLE_MAPS_API_KEY}`})
+    }, [photo_reference, GOOGLE_MAPS_API_KEY]) */
 
     const openMap = () => {
         const encodedAddress = encodeURIComponent(formattedAddress); // Encode for URL
@@ -136,7 +152,7 @@ const SingleRestaurantScreen = () => {
                     resizeMode="cover" // Or contain, depending on your needs
                 >
                     <View style={globalStyles.overlayView}>
-                        <Pressable onPress={() => navigation.goBack()} style={{ position: 'absolute', top: 32, left: 6, padding: 10, zIndex: 99 }}><MaterialCommunityIcons name="keyboard-backspace" size={28} color="#ffffff" /></Pressable>
+                        <Pressable onPress={() => handleBack()} style={{ position: 'absolute', top: 32, left: 6, padding: 10, zIndex: 99 }}><MaterialCommunityIcons name="keyboard-backspace" size={28} color="#ffffff" /></Pressable>
                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 10, position: 'absolute', top: 30, right: 6, zIndex: 99 }}>
                             <LikeBtnComponent rid={id} style={{ padding: 10 }} />
                             <MaterialCommunityIcons name="share-variant" size={28} color="#ffffff" style={{ padding: 10 }} />
@@ -164,8 +180,8 @@ const SingleRestaurantScreen = () => {
                                 </View>
                                 <View style={{ width: Dimensions.get('window').width - 30, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', gap: 15 }}>
                                     {distancekm !== '' && <Text style={[styles.ratingcardtitle, styles.distance]}>{distancekm}</Text>}
-                                    <View style={styles.ratingcard}><View style={styles.rating}><Text style={{ color: '#FFFFFF' }}>{rating ? rating : 0}<Entypo name="star" size={15} color="#FFFFFF" /></Text></View><View><Text style={styles.ratingcardtitle}>Halal{"\n"}Rating</Text></View></View>
-                                    <View style={styles.ratingcard}><View style={styles.rating}><Text style={{ color: '#FFFFFF' }}>3<Entypo name="star" size={15} color="#FFFFFF" /></Text></View><View><Text style={styles.ratingcardtitle}>Google{"\n"}Rating</Text></View></View>
+                                    <View style={styles.ratingcard}><View style={[styles.rating, styles.hrating]}><Text style={{ color: '#FFFFFF' }}>{rating ? rating : 0}<Entypo name="star" size={15} color="#FFFFFF" /></Text></View><View><Text style={styles.ratingcardtitle}>Halal{"\n"}Rating</Text></View></View>
+                                    <View style={styles.ratingcard}><View style={[styles.rating, styles.grating]}><Text style={{ color: '#FFFFFF' }}>{GoogleRating}<Entypo name="star" size={15} color="#FFFFFF" /></Text></View><View><Text style={styles.ratingcardtitle}>Google{"\n"}Rating</Text></View></View>
                                 </View>
                             </View>
                             <View style={[{ paddingHorizontal: 15 }]}>
@@ -236,7 +252,7 @@ const styles = StyleSheet.create({
     restTitle: {
         textAlign: 'left',
         fontSize: 18,
-        lineHeight: 20,
+        lineHeight: 30,
         fontFamily: 'popS',
         color: '#2D2729',
         width: Dimensions.get('window').width - 30,
@@ -279,8 +295,13 @@ const styles = StyleSheet.create({
         paddingVertical: 3,
         paddingHorizontal: 5,
         borderRadius: 4,
-        backgroundColor: '#B1D235',
         minWidth: 40
+    },
+    hrating: {
+        backgroundColor: '#87aa03',
+    },
+    grating: {
+        backgroundColor: '#2D2729',
     },
     row: {
         width: Dimensions.get('window').width - 30,
@@ -333,7 +354,7 @@ const styles = StyleSheet.create({
     favour: {
         padding: 10,
         backgroundColor: '#ffffff',
-        borderRadius: 12,
+        borderRadius: 8,
         borderWidth: 1,
         borderStyle: 'solid',
         borderColor: '#e5e5e7',

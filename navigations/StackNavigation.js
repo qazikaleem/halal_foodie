@@ -1,22 +1,24 @@
-import React from "react";
+import Octicons from '@expo/vector-icons/Octicons';
+import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
-import HomeScreen from '../screens/HomeScreen';
-import RestaurantsScreen from '../screens/RestaurantsScreen';
-import SingleRestaurantScreen from '../screens/SingleRestaurantScreen';
-import SearchLocationScreen from '../screens/SearchLocationScreen';
-import MapViewScreen from '../screens/MapViewScreen';
-import HalalReviewInfoScreen from '../screens/HalalReviewInfoScreen';
-import FavoriteResScreen from '../screens/FavoriteResScreen';
-import UserAccountScreen from '../screens/UserAccountScreen';
-import LoginScreen from "../screens/LoginScreen";
-import RegisterScreen from "../screens/RegisterScreen";
+import React from "react";
 import ProtectedRoute from "../auth/protectedRoute";
+import FavoriteResScreen from '../screens/FavoriteResScreen';
+import HalalReviewInfoScreen from '../screens/HalalReviewInfoScreen';
 import HalalReviewScreen from "../screens/HalalReviewScreen";
+import HomeScreen from '../screens/HomeScreen';
+import LoginScreen from "../screens/LoginScreen";
+import MapViewScreen from '../screens/MapViewScreen';
+import RegisterScreen from "../screens/RegisterScreen";
+import RestaurantsScreen from '../screens/RestaurantsScreen';
 import ResultRestaurantsScreen from "../screens/ResultRestaurantsScreen";
+import SearchLocationScreen from '../screens/SearchLocationScreen';
+import SingleRestaurantScreen from '../screens/SingleRestaurantScreen';
 import SortFilterScreen from "../screens/SortFilterScreen";
+import UserAccountScreen from '../screens/UserAccountScreen';
+import VerifiedResScreen from '../screens/VerifiedResScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -48,7 +50,7 @@ function BottomTabs() {
                         ),
                 }}
             />
-            <Tab.Screen
+            {/* <Tab.Screen
                 name='FavoriteRes'
                 children={() => (
                     <ProtectedRoute>
@@ -61,6 +63,18 @@ function BottomTabs() {
                             <SimpleLineIcons name="heart" size={25} color="#2D2729" />
                         ) : (
                             <SimpleLineIcons name="heart" size={25} color="#ffffff" />
+                        ),
+                }}
+            /> */}
+            <Tab.Screen
+                name='VerifiedRes'
+                component={VerifiedResScreen}
+                options={{
+                    tabBarIcon: ({ focused }) =>
+                        focused ? (
+                            <Octicons name="verified" size={28} color="#2D2729" />
+                        ) : (
+                            <Octicons name="verified" size={28} color="#ffffff" />
                         ),
                 }}
             />
@@ -118,6 +132,7 @@ const StackNavigation = () => {
                 <Stack.Screen name="ResultRestaurants" component={ResultRestaurantsScreen} />
                 <Stack.Screen name="SingleRestaurant" component={SingleRestaurantScreen} />
                 <Stack.Screen name="SingleRestaurantHalalReview" component={HalalReviewScreen} />
+                <Stack.Screen name="FavoriteRes" children={() => (<ProtectedRoute><FavoriteResScreen /></ProtectedRoute>)} />
                 <Stack.Screen name="SearchLocation" component={SearchLocationScreen} />
                 <Stack.Screen name="SortFilter" component={SortFilterScreen} />
                 <Stack.Screen name="Login" component={LoginScreen} />

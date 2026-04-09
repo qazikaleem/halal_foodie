@@ -168,6 +168,7 @@ const SearchLocationScreen = () => {
     };
 
     const confirmLocation = () => {
+        setLoadingLocation(true)
         dispatch(upLocation({
             currentLocation: location.currentLocation,
             latitude: location.latitude,
@@ -276,7 +277,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         backgroundColor: '#fff',
-        borderRadius: 12,
+        borderRadius: 8,
         paddingHorizontal: 10,
         borderWidth: 1,
         borderColor: '#B1D235',
@@ -298,7 +299,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         paddingHorizontal: 10,
         paddingVertical: 12,
-        borderRadius: 12
+        borderRadius: 8
     },
     searchIcon: {
         paddingVertical: 12,
@@ -310,6 +311,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     fbtn: {
+        paddingVertical: 10,
         width: Dimensions.get('window').width - 30,
     },
     btnText: {

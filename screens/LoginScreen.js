@@ -1,16 +1,16 @@
-import { StyleSheet, Text, View, Image, Dimensions, StatusBar, Platform, Pressable, TextInput, TouchableOpacity, Alert } from 'react-native'
-import { useNavigation, useFocusEffect } from '@react-navigation/native'
-import React, { useCallback, useState, useEffect } from 'react'
-import globalStyles from '../constants/globalStyles'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import Logo from '../assets/icon-bs.png'
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useDispatch } from 'react-redux'
+import { Formik } from 'formik';
+import React, { useCallback, useState } from 'react';
+import { Alert, Dimensions, Image, Platform, Pressable, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useDispatch } from 'react-redux';
+import * as Yup from 'yup';
+import Logo from '../assets/icon-bs.png';
+import globalStyles from '../constants/globalStyles';
 import { login } from "../redux/authSlice";
 import { loginFunc } from "../servers/user";
-import { Formik } from 'formik';
-import * as Yup from 'yup';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         paddingVertical: 10,
         paddingHorizontal: 15,
-        borderRadius: 12,
+        borderRadius: 8,
         fontSize: 16,
         fontWeight: '400',
         color: '#2D2729',

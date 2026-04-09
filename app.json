@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "HalalFoodNearMe",
+    "name": "Halal Food Near Me",
     "slug": "HalalFoodNearMe",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "halalfoodnearme",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    //"newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
@@ -18,7 +18,12 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.halalfoodie.HalalFoodNearMe"
+      "package": "com.halalfoodie.HalalFoodNearMe",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAABMifab1QHriKktEeFEX6ME8rKR8F208"
+        }
+      }
     },
     "web": {
       "output": "static",
@@ -43,6 +48,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "66e4873b-0390-49f3-bb48-23bad8c0a669"
+      }
     }
   }
 }

@@ -1,19 +1,17 @@
-import { StyleSheet, Text, TextInput, View, Image, ScrollView, Dimensions, StatusBar, Pressable, FlatList, ActivityIndicator, ToastAndroid } from 'react-native'
-import React, { useCallback, useEffect, useState, useRef } from 'react'
-import globalStyles from '../constants/globalStyles'
-import { useNavigation, useFocusEffect, useRoute } from '@react-navigation/native'
 import Entypo from '@expo/vector-icons/Entypo';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { fetchRestaurantsByCoords } from '../servers/restaurants';
+import Feather from '@expo/vector-icons/Feather';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import Logo from '../assets/icon-bs.png'
-import FilterList from '../assets/filter-list.png'
-import ModelComponent from '../components/ModelComponent'
-import { useSelector } from 'react-redux'
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Dimensions, FlatList, Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useSelector } from 'react-redux';
+import FilterList from '../assets/filter-list.png';
+import Logo from '../assets/icon-bs.png';
 import CardComponent from '../components/CardComponent';
-import Feather from '@expo/vector-icons/Feather';
 import Chip from '../components/ChipComponent';
+import globalStyles from '../constants/globalStyles';
+import { fetchRestaurantsByCoords } from '../servers/restaurants';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -41,6 +39,20 @@ const ResultRestaurantsScreen = () => {
     const filterCategories = categories.child.filter(item => filter?.includes(item.id));
 
     const { currentLocation, latitude, longitude } = location
+
+    const inputRef = useRef(null);
+
+    useFocusEffect(
+        useCallback(() => {
+            // Focus the input when the screen comes into focus
+            inputRef.current?.focus();
+
+            return () => {
+                // Optional cleanup function when the screen blurs/unfocuses
+                inputRef.current?.blur();
+            };
+        }, [])
+    );
 
     useEffect(() => {
         FetchRestaurants()
@@ -136,25 +148,16 @@ const ResultRestaurantsScreen = () => {
                     </View>
                     <View style={{ width: Dimensions.get('window').width - 120 }}>
                         <Text style={{ fontSize: 12, color: '#FFFFFF', fontFamily: 'popS' }}>Use your Current or Search any Location</Text>
-                        <Text style={{ fontSize: 14, color: '#2D2729', fontFamily: 'popS' }}>{currentLocation.length > 30 ? `${currentLocation.substring(0, 30)}...` : currentLocation}{" "}<Entypo name="chevron-thin-right" size={15} color="#2D2729" /></Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={{ flex: 1, marginRight: 5, fontSize: 14, color: '#2D2729', fontFamily: 'popS' }} numberOfLines={1} ellipsizeMode="tail">{currentLocation}</Text><Entypo name="chevron-thin-right" size={15} color="#2D2729" />
+                        </View>
                     </View>
                     <Image source={Logo} style={{ maxWidth: 40, height: 40 }} />
                 </Pressable>}
-                {/* <Pressable onPress={() => setSearchLocationVisible(true)} style={({ pressed }) => [{ backgroundColor: pressed ? '#526119' : '#2D2729' }, styles.locsearchbtn]}>
-                    <View style={{ flexDirection: 'row', gap: 16 }}><Feather name="search" size={18} color="#FFFFFF" /><Text style={{ fontSize: 16, lineHeight: 20, color: '#FFFFFF', textAlign: 'left', fontFamily: 'popM' }}>Search any or Current Location</Text></View><Feather name="chevron-right" size={18} color="#FFFFFF" />
-                </Pressable> */}
-                {/* <View style={styles.searchContainer}>
-                    <TextInput
-                        placeholder="Search by restaurant"
-                        onChangeText={(value) => setSearch(value)}
-                        value={search}
-                        style={styles.textInput}
-                    />
-                    <Feather name="search" size={20} color="#B1D235" style={styles.searchIcon} />
-                </View> */}
                 <View style={{ width: Dimensions.get('window').width - 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginTop: 10 }}>
                     <View style={styles.searchContainer}>
                         <TextInput
+                            ref={inputRef}
                             placeholder="Search by restaurant"
                             onChangeText={(value) => setSearch(value)}
                             value={search}
@@ -221,7 +224,7 @@ const ResultRestaurantsScreen = () => {
                             scrollEnabled={false}
                             data={restaurants}
                             keyExtractor={(item) => item.id.toString()}
-                            renderItem={({ item, index }) => <CardComponent item={item} ratings={false} index={index} />}
+                            renderItem={({ item, index }) => <CardComponent item={item} ratings={true} index={index} screen="Result" />}
                         /* onEndReached={() => !loadmore && hasMore && setPage(page + 1)}
                         onEndReachedThreshold={0.5}
                         ListFooterComponent={() => loadmore && hasMore && <ActivityIndicator />} */
@@ -244,13 +247,13 @@ const styles = StyleSheet.create({
         marginTop: 10,
         paddingHorizontal: 10,
         paddingVertical: 12,
-        borderRadius: 12
+        borderRadius: 8
     },
     dropdownMenuStyle: {
         width: 200,
         height: 50,
         backgroundColor: '#E9ECEF',
-        borderRadius: 12,
+        borderRadius: 8,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
@@ -273,7 +276,7 @@ const styles = StyleSheet.create({
         gap: 5,
         alignItems: 'center',
         backgroundColor: '#B1D235',
-        borderRadius: 12,
+        borderRadius: 8,
         borderWidth: 1,
         borderColor: '#B1D235',
     },
@@ -309,7 +312,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         backgroundColor: '#fff',
-        borderRadius: 12,
+        borderRadius: 8,
         paddingHorizontal: 10,
         borderWidth: 1,
         borderColor: '#B1D235',

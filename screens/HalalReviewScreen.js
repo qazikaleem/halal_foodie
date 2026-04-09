@@ -1,17 +1,18 @@
-import { StyleSheet, Text, View, Image, Dimensions, StatusBar, Pressable, ScrollView, Platform, FlatList, Switch, TextInput, Button, Alert } from 'react-native'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import React, { useCallback, useEffect, useState } from 'react'
-import globalStyles from '../constants/globalStyles'
+import Entypo from '@expo/vector-icons/Entypo'
+import Feather from '@expo/vector-icons/Feather'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import Entypo from '@expo/vector-icons/Entypo';
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-import Logo from '../assets/icon-bs.png'
+import { useFonts } from 'expo-font'
+import * as SplashScreen from 'expo-splash-screen'
+import { Formik } from "formik"
+import React, { useCallback, useEffect, useState } from 'react'
+import { Alert, Dimensions, Image, Pressable, StatusBar, StyleSheet, Switch, Text, TextInput, View } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useSelector } from 'react-redux'
-import { Formik } from "formik";
-import * as Yup from "yup";
-import { postHalalRating, getHalalRatingsByUid } from '../servers/halalrating';
-import Feather from '@expo/vector-icons/Feather';
+import * as Yup from "yup"
+import FilterList from '../assets/filter-list.png'
+import Logo from '../assets/icon-bs.png'
+import globalStyles from '../constants/globalStyles'
+import { getHalalRatingsByUid, postHalalRating } from '../servers/halalrating'
 
 SplashScreen.preventAutoHideAsync();
 
@@ -197,36 +198,22 @@ const HalalReviewScreen = () => {
                     </View>
                     <View style={{ width: Dimensions.get('window').width - 120 }}>
                         <Text style={{ fontSize: 12, color: '#FFFFFF', fontFamily: 'popS' }}>Use your Current or Search any Location</Text>
-                        <Text style={{ fontSize: 14, color: '#2D2729', fontFamily: 'popS' }}>{currentLocation.length > 30 ? `${currentLocation.substring(0, 30)}...` : currentLocation}{" "}<Entypo name="chevron-thin-right" size={15} color="#2D2729" /></Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={{ flex: 1, marginRight: 5, fontSize: 14, color: '#2D2729', fontFamily: 'popS' }} numberOfLines={1} ellipsizeMode="tail">{currentLocation}</Text><Entypo name="chevron-thin-right" size={15} color="#2D2729" />
+                        </View>
                     </View>
                     <Image source={Logo} style={{ maxWidth: 40, height: 40 }} />
                 </Pressable>}
-                <View style={styles.searchContainer}>
-                    <TextInput
-                        placeholder="Search by restaurant"
-                        onChangeText={(value) => handleSearch(value)}
-                        value={search}
-                        style={styles.searchTextInput}
-                    />
-                    <Feather name="search" size={20} color="#B1D235" style={styles.searchIcon} />
+                <View style={{ width: Dimensions.get('window').width - 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginTop: 10 }}>
+                    <View style={styles.searchContainer}>
+                        <Pressable style={styles.textInput} onPress={() => navigation.navigate('ResultRestaurants', { search: '' })}><Text style={{ paddingHorizontal: 4, paddingVertical: 8, fontSize: 16, opacity: 0.55 }}>Search by restaurant</Text></Pressable>
+                        <Feather name="search" size={20} color="#B1D235" style={styles.searchIcon} />
+                    </View>
+                    <Pressable style={({ pressed }) => [{ backgroundColor: pressed ? 'rgba(177, 210, 53,0.45)' : '#ffffff' }, styles.filterbtn]} onPress={() => navigation.navigate('SortFilter')}>
+                        <Image source={FilterList} style={{ maxWidth: 30, height: 30 }} />
+                    </Pressable>
                 </View>
             </View>
-
-            {/* <ModelComponent visible={sortModelVisible} onDismiss={() => setSortModelVisible(false)} heading='Sort & Filter' subheading=''>
-          <View>
-              <Text style={{ fontSize: 18, fontFamily: 'popS', marginBottom: 10 }}>Sort by</Text>
-              {sortOptions.map((option) => (
-                  <RadioButton
-                      key={option.value}
-                      label={option.label}
-                      value={option.value}
-                      checked={orderby === option.value}
-                      onPress={() => handleSort(option.value)}
-                  />
-              ))}
-          </View>
-      </ModelComponent> */}
-
             <View style={[globalStyles.container]}>
                 <KeyboardAwareScrollView
                     contentContainerStyle={{ flexGrow: 1 }}
@@ -245,7 +232,7 @@ const HalalReviewScreen = () => {
                                 <View style={styles.heading}>
                                     <Text style={styles.headingPreTxt}>Provide Halal Rating on</Text>
                                     <Text style={styles.headingTxt}>{resname}</Text>
-                                    {verifiedDate && <Text style={[styles.headingPreTxt]}>* Already You verified on{" "}{FormattedVerifiedDate}</Text>}
+                                    {verifiedDate && <Text style={[styles.headingPreTxt, { color: '#747172ff' }]}>* Already You verified on{" "}{FormattedVerifiedDate}</Text>}
                                 </View>
                                 {options.map((option, index) => {
                                     const isOn = values.ratingValues.includes(option.opt)
@@ -383,7 +370,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width - 30,
         display: 'flex',
         gap: 0,
-        borderRadius: 12,
+        borderRadius: 8,
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: '#454955',
@@ -396,7 +383,7 @@ const styles = StyleSheet.create({
     },
     cartAlt: {
         width: Dimensions.get('window').width - 30,
-        borderRadius: 12,
+        borderRadius: 8,
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: '#454955',
@@ -472,16 +459,30 @@ const styles = StyleSheet.create({
         width: (Dimensions.get('window').width - 40) / 2,
     },
     searchContainer: {
-        width: Dimensions.get('window').width - 30,
+        width: Dimensions.get('window').width - 70,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         backgroundColor: '#fff',
-        borderRadius: 12,
+        borderRadius: 8,
         paddingHorizontal: 10,
         borderWidth: 1,
         borderColor: '#B1D235',
-        marginTop: 10
+    },
+    textInput: {
+        width: Dimensions.get('window').width - 120,
+        height: 40,
+        fontSize: 16,
+        lineHeight: 20
+    },
+    filterbtn: {
+        flexDirection: 'row',
+        gap: 5,
+        alignItems: 'center',
+        backgroundColor: '#B1D235',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#B1D235',
     },
     searchTextInput: {
         width: Dimensions.get('window').width - 70,

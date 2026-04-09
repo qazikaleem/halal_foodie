@@ -1,15 +1,13 @@
-import { StyleSheet, Text, View, Image, Dimensions, StatusBar, Platform, Pressable, TouchableOpacity, ScrollView } from 'react-native'
-import { useNavigation, useFocusEffect, useRoute } from '@react-navigation/native'
-import React, { useRef, useCallback, useState, useEffect } from 'react'
-import globalStyles from '../constants/globalStyles'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import Logo from '../assets/icon-bs.png'
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useSelector } from 'react-redux'
 import { Formik } from "formik";
-import * as Yup from "yup";
-import { fetchCategories } from '../servers/categories';
+import React, { useCallback } from 'react';
+import { Dimensions, Image, Pressable, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useSelector } from 'react-redux';
+import Logo from '../assets/icon-bs.png';
+import globalStyles from '../constants/globalStyles';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -79,7 +77,7 @@ const SortFilterScreen = () => {
                     >
                         {({ values, handleSubmit, setFieldValue, errors, touched }) => (
 
-                            <View style={{ width: Dimensions.get('window').width, minHeight: Dimensions.get('window').height - 150, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                            <View style={{ width: Dimensions.get('window').width, height: Dimensions.get('window').height - 100, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                                 <ScrollView style={styles.box}>
                                     <Text style={{ fontSize: 21, color: "#87aa03", opacity: 0.95, marginBottom: 10, fontFamily: 'popS' }}>Sort</Text>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', marginBottom: 20 }}>
@@ -213,7 +211,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width - 30,
         /* paddingVertical: 10,
         paddingHorizontal: 15,
-        borderRadius: 12,
+        borderRadius: 8,
         borderColor: '#87aa03',
         borderStyle: 'solid',
         borderWidth: 1, */

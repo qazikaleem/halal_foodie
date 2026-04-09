@@ -10,14 +10,13 @@ import FilterList from '../assets/filter-list.png';
 import Logo from '../assets/icon-bs.png';
 import CardComponent from '../components/CardComponent';
 import globalStyles from '../constants/globalStyles';
-import { fetchLikedRestaurants } from '../servers/likeunlike';
+import { fetchVerifiedRestaurants } from '../servers/halalrating';
 
 SplashScreen.preventAutoHideAsync();
 
-const FavoriteResScreen = () => {
+const VerifiedResScreen = () => {
   const navigation = useNavigation();
   const location = useSelector((state) => state.location)
-  const uid = useSelector((state) => state.auth.uid);
   const [isLoading, setLoading] = useState(true);
   const [restaurants, setRestaurants] = useState([])
   const [page, setPage] = useState(1); // Start at page 1 (or 0, depending on your API)
@@ -28,7 +27,7 @@ const FavoriteResScreen = () => {
   const FetchRestaurants = async () => {
     setLoading(true);
     try {
-      const response = await fetchLikedRestaurants(uid);
+      const response = await fetchVerifiedRestaurants();
       if (response && response.length > 0) { // Example: Check if the response has any data
         setRestaurants(response); // Append new data
       } else {
@@ -106,10 +105,10 @@ const FavoriteResScreen = () => {
       </View>
       <View style={{ width: Dimensions.get('window').width - 30, paddingHorizontal: Platform.OS === 'android' ? 15 : 0, }}>
         <View style={styles.heading}>
-          <Text style={styles.headingTxt}>Favorite Restaurants</Text>
+          <Text style={styles.headingTxt}>Verified Restaurants</Text>
         </View>
       </View>
-      <ScrollView style={{ width: Dimensions.get('window').width }}>
+      <ScrollView>
         {isLoading ?
           <View style={[globalStyles.container, { alignItems: 'center', justifyContent: 'space-around', flexDirection: 'row', padding: 10, }]}>
             <ActivityIndicator size='50' color='#B1D235' />
@@ -131,11 +130,12 @@ const FavoriteResScreen = () => {
               <Text style={{ fontSize: 20 }}>No Liked Restaurants</Text>
             </View>}
       </ScrollView>
+
     </View>
   )
 }
 
-export default FavoriteResScreen
+export default VerifiedResScreen
 
 const styles = StyleSheet.create({
   searchContainer: {

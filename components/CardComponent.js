@@ -1,17 +1,17 @@
-import { StyleSheet, Text, View, Dimensions, Pressable, Image, Platform } from 'react-native'
-import React, { useCallback } from 'react'
-import { useNavigation } from '@react-navigation/native'
 import Entypo from '@expo/vector-icons/Entypo';
+import { useNavigation } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import React, { useCallback } from 'react';
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 /* import SplashScreen from 'react-native-splash-screen';
 import useFonts from '../hooks/useFonts'; */
-import RestLogo from '../assets/restlogo.png'
-import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux';
+import LogoCircle from './LogoCircle';
 
 SplashScreen.preventAutoHideAsync();
 
-const CardComponent = ({ item, ratings = true, index }) => {
+const CardComponent = ({ item, ratings = true, index, screen }) => {
 
     //console.log(item)
 
@@ -25,7 +25,8 @@ const CardComponent = ({ item, ratings = true, index }) => {
             id: itemID,
             currentLocation: currentLocation,
             latitude: latitude,
-            longitude: longitude
+            longitude: longitude,
+            from: screen
         })
     }
 
@@ -58,25 +59,25 @@ const CardComponent = ({ item, ratings = true, index }) => {
     return (
         <Pressable key={item.id} style={({ pressed }) => [{ backgroundColor: pressed ? 'rgba(177, 210, 53,0.45)' : '#ffffff' }, styles.card, index === 0 && styles.firstCard]} onPress={() => SingleRestaurantHandle(item.id)} onLayout={handleOnLayout}>
             <View style={{ width: 50 }}>
-                <Image source={RestLogo} style={{ maxWidth: 45, height: 45 }} />
+                {/* <Image source={RestLogo} style={{ maxWidth: 45, height: 45 }} /> */}
+                <LogoCircle name={item.restaurantName} size={45} deterministic={true} />
             </View>
-            <View style={{ width: ratings ? Dimensions.get('window').width - 140 : Dimensions.get('window').width - 100 }}>
+            <View style={{ width: Dimensions.get('window').width - 100 }}>
                 <View style={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
-                    {ratings ? <Text style={styles.cardTitle}>{item.restaurantName.length > 22 ? `${item.restaurantName.substring(0, 22)}...` : item.restaurantName}</Text> :
-                        <Text style={styles.cardTitle}>{item.restaurantName.length > 32 ? `${item.restaurantName.substring(0, 32)}...` : item.restaurantName}</Text>
-                    }
-                    {ratings ? <View style={styles.location}><Entypo name="location-pin" size={15} color="#87aa03" /><Text style={styles.locationtxt}>{item.formattedAddress.length > 28 ? `${item.formattedAddress.substring(0, 28)}...` : item.formattedAddress}</Text></View> :
-                        <View style={styles.location}><Entypo name="location-pin" size={15} color="#87aa03" /><Text style={styles.locationtxt}>{item.formattedAddress.length > 35 ? `${item.formattedAddress.substring(0, 35)}...` : item.formattedAddress}</Text></View>}
+                    <Text style={styles.cardTitle} numberOfLines={1} ellipsizeMode="tail">{item.restaurantName}</Text>
+                    <View style={styles.location}><Entypo name="location-pin" size={15} color="#87aa03" /><Text style={styles.locationtxt} numberOfLines={1} ellipsizeMode="tail">{item.formattedAddress}</Text></View>
                 </View>
-                <View style={{ width: Dimensions.get('window').width - 140, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', gap: 10 }}>
+                <View style={{ width: Dimensions.get('window').width - 100, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between',marginTop: 5 }}>
+                    <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap:10}}>
                     {item.resopenclose ? <Text style={[styles.hours, { color: '#87aa03' }]}>Open Now</Text> : <Text style={[styles.hours, { color: '#df0000ff' }]}>Closed</Text>}
                     {item.distancekm ? <Text style={styles.distance}>{item.distancekm}</Text> : ''}
+                    </View>
+                    {ratings && <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap:10}}>
+                        <View><View style={[styles.rating, styles.hrating]}><Text style={{ fontSize: 11, color: '#ffffff' }}>{item.rating ? item.rating : item.ratingValue ? item.ratingValue : 0}<Entypo name="star" size={12} color="#ffffff" /></Text></View>{/* <Text style={{ fontSize: 8, textAlign: 'center', fontFamily: 'popB' }}>halal</Text> */}</View>
+                        <View><View style={[styles.rating, styles.grating]}><Text style={{ fontSize: 11, color: '#ffffff' }}>{item.GoogleRating}<Entypo name="star" size={12} color="#ffffff" /></Text></View>{/* <Text style={{ fontSize: 8, textAlign: 'center', fontFamily: 'popB' }}>google</Text> */}</View>
+                    </View>}
                 </View>
             </View>
-            {ratings && <View style={{ alignItems: 'center', justifyContent: 'space-between', gap: 5 }}>
-                <View><View style={[styles.rating, styles.hrating]}><Text style={{ fontSize: 11, color: '#ffffff' }}>{Math.ceil(item.rating)}<Entypo name="star" size={12} color="#ffffff" /></Text></View><Text style={{ fontSize: 8, textAlign: 'center', fontFamily: 'popB' }}>halal</Text></View>
-                <View><View style={[styles.rating, styles.grating]}><Text style={{ fontSize: 11, color: '#ffffff' }}>3<Entypo name="star" size={12} color="#ffffff" /></Text></View><Text style={{ fontSize: 8, textAlign: 'center', fontFamily: 'popB' }}>google</Text></View>
-            </View>}
         </Pressable>
     )
 }
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5,
         paddingVertical: 6,
         marginBottom: 5,
-        borderRadius: 12,
+        borderRadius: 8,
         boxShadow: '0 2px 3px 1px #e6e6e6ff'
     },
     firstCard: {
@@ -108,35 +109,42 @@ const styles = StyleSheet.create({
         fontFamily: 'popS',
         //fontFamily: 'Poppins-SemiBold',
         width: Dimensions.get('window').width - 100,
+        flexShrink: 1,     // IMPORTANT: allow shrinking
+        flexWrap: 'nowrap' // avoid wrapping
     },
     location: {
         flexDirection: 'row',
         alignItems: 'baseline',
         justifyContent: 'flex-start',
-        marginLeft: -3
+        marginLeft: -3,
     },
     locationtxt: {
         color: '#2D2729',
         fontSize: 14,
-        lineHeight: 16,
+        lineHeight: 20,
         fontFamily: 'popM',
-        opacity: 0.65
+        opacity: 0.65,
+        flexShrink: 1,     // IMPORTANT: allow shrinking
+        flexWrap: 'nowrap' // avoid wrapping
     },
     distance: {
         color: '#2D2729',
         fontSize: 13,
-        marginTop: 4,
+        lineHeight: 16,
+        //marginTop: 4,
         fontFamily: 'popS',
     },
     hours: {
         fontSize: 13,
-        marginTop: 4,
+        lineHeight: 16,
+        //marginTop: 4,
         fontFamily: 'popB',
         textTransform: 'uppercase'
     },
     rating: {
-        paddingVertical: 3,
-        width: 32,
+        paddingVertical: 2,
+        paddingHorizontal: 4,
+        width: 42,
         borderRadius: 4,
         alignItems: 'center'
     },

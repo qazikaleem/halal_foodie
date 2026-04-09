@@ -1,5 +1,5 @@
 // globalStyles.js
-import { StyleSheet, Platform, Dimensions } from 'react-native';
+import { Dimensions, Platform, StyleSheet } from 'react-native';
 
 const globalStyles = StyleSheet.create({
   droidSafeArea: {
@@ -45,7 +45,7 @@ const globalStyles = StyleSheet.create({
   btn: {
     paddingVertical: 6,
     paddingHorizontal: 12,
-    borderRadius: 12,
+    borderRadius: 8,
     maxHeight: 45
   },
   iconBtn: {
@@ -69,7 +69,7 @@ const globalStyles = StyleSheet.create({
   loadingtitle: {
     textAlign: 'center',
     fontSize: 16,
-    fontFamily: 'Poppins-Regular',
+    fontFamily: 'PopM',
     marginVertical: 15,
     color: '#2D2729',
     width: Dimensions.get('window').width - 30

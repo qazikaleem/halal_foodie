@@ -1,13 +1,13 @@
-import { StyleSheet, Text, View, Image, StatusBar, Pressable, Platform, Dimensions, Alert, Linking } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { useFonts } from 'expo-font'
 import * as Location from "expo-location"
-import { useNavigation, useFocusEffect } from '@react-navigation/native'
-import globalStyles from '../constants/globalStyles'
+import * as SplashScreen from 'expo-splash-screen'
+import React, { useCallback, useEffect, useState } from 'react'
+import { Alert, Dimensions, Image, Linking, Platform, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { upLocation } from '../redux/locSlice'
 import AppLogo from '../assets/logo.png'
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
+import globalStyles from '../constants/globalStyles'
+import { upLocation } from '../redux/locSlice'
 
 SplashScreen.preventAutoHideAsync();
 
@@ -84,8 +84,8 @@ const HomeScreen = () => {
                     longitude: longitude
                 }))
             }
-            console.log(latitude)
-            console.log(longitude)
+            /* console.log(latitude)
+            console.log(longitude) */
             setLoadingLocation(false)
             navigation.navigate('Main')
         }

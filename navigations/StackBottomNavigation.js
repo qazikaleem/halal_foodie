@@ -1,22 +1,21 @@
-import React from "react";
+import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
-import HomeScreen from '../screens/HomeScreen';
-import RestaurantsScreen from '../screens/RestaurantsScreen';
-import SingleRestaurantScreen from '../screens/SingleRestaurantScreen';
-import SearchLocationScreen from '../screens/SearchLocationScreen';
-import MapViewScreen from '../screens/MapViewScreen';
-import HalalReviewInfoScreen from '../screens/HalalReviewInfoScreen';
-import FavoriteResScreen from '../screens/FavoriteResScreen';
-import UserAccountScreen from '../screens/UserAccountScreen';
-import LoginScreen from "../screens/LoginScreen";
-import RegisterScreen from "../screens/RegisterScreen";
+import React from "react";
 import ProtectedRoute from "../auth/protectedRoute";
+import HalalReviewInfoScreen from '../screens/HalalReviewInfoScreen';
 import HalalReviewScreen from "../screens/HalalReviewScreen";
+import HomeScreen from '../screens/HomeScreen';
+import LoginScreen from "../screens/LoginScreen";
+import MapViewScreen from '../screens/MapViewScreen';
+import RegisterScreen from "../screens/RegisterScreen";
+import RestaurantsScreen from '../screens/RestaurantsScreen';
 import ResultRestaurantsScreen from "../screens/ResultRestaurantsScreen";
+import SearchLocationScreen from '../screens/SearchLocationScreen';
+import SingleRestaurantScreen from '../screens/SingleRestaurantScreen';
 import SortFilterScreen from "../screens/SortFilterScreen";
+import UserAccountScreen from '../screens/UserAccountScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -79,7 +78,7 @@ const StackBottomNavigation = () => {
                             ),
                     }}
                 />
-                <Tab.Screen
+                {/* <Tab.Screen
                     name='FavoriteRes'
                     children={() => (
                         <ProtectedRoute>
@@ -94,7 +93,7 @@ const StackBottomNavigation = () => {
                                 <SimpleLineIcons name="heart" size={25} color="#ffffff" />
                             ),
                     }}
-                />
+                /> */}
                 <Tab.Screen
                     name='UserAccount'
                     children={() => (
