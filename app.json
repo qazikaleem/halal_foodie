@@ -7,7 +7,7 @@
     "icon": "./assets/icon.png",
     "scheme": "halalfoodnearme",
     "userInterfaceStyle": "automatic",
-    //"newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true
     },
@@ -21,7 +21,7 @@
       "package": "com.halalfoodie.HalalFoodNearMe",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyAABMifab1QHriKktEeFEX6ME8rKR8F208"
+          "apiKey": "EXPO_PUBLIC_GOOGLE_API_KEY"
         }
       }
     },
